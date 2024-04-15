@@ -1,12 +1,12 @@
 {
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "sqlite3": "^5.1.7"
   },
   "name": "notepad_api",
   "version": "1.0.0",
   "main": "erin.js",
-  "devDependencies": {},
   "scripts": {
     "start": "node erin.js",
     "test": "echo \"Error: no test specified\" && exit 1"
