@@ -5,9 +5,11 @@ const app = express();
 
 const port = process.env.PORT || 8080;
 
-let db = new sqlite3.Database('./wets.db',(err)=>{
-    if(err){
-        console.log("no such file");
+const db = new sqlite3.Database('./wets.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
+    if (err) {
+        console.error("Error opening database:", err.message);
+    } else {
+        console.log("Connected to the database.");
     }
 });
 
@@ -27,6 +29,7 @@ app.get('/make_wet/:make/:wet', (req, res) => {
         if(err){
             res.json({key:"Somthing went wrong"});
             console.log("not inserted")
+
         }
         else{
             console.log("updated in database!!");
