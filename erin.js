@@ -23,14 +23,17 @@ app.get('/make_wet/:make/:wet', (req, res) => {
     const val = decodeURIComponent(req.params.wet);
     console.log(key);
     console.log(val);
-    db.run(`update moko set value = ? where key = ?`,[val,key],(err)=>{
+    db.run(`insert or replace into moko values(?,?)`,[val,key],(err)=>{
         if(err){
+            res.json({key:"Somthing went wrong"});
             console.log("not inserted")
         }
+        else{
+            console.log("updated in database!!");
+            res.json({key:"Saved"});
+        }
     });
-    console.log("updated in database!!");
-    res.json({key:"done"});
-    return;
+    
 });
 
 app.get('/fuck/:id', (req, res) => {
@@ -42,7 +45,7 @@ app.get('/fuck/:id', (req, res) => {
     db.get(`SELECT * FROM moko WHERE key = ?`, [key],(err,row)=>{
         if(err){
          console.log("somthing wroug");
-         res.json({ key: "" });
+         res.json({ key: "Failed" });
         }
         else{
          if(row){
@@ -53,11 +56,11 @@ app.get('/fuck/:id', (req, res) => {
             db.run(`insert into moko values(?,'')`,[key],(err)=>{
                 if(err){
                     console.log("not inserted")
-                    res.json({ key: "" });
+                    res.json({ key: "Failed to create" });
                 }
                 else{
                     console.log("Inserted new key into database");
-                    res.json({ key: "" });
+                    res.json({ key: "created !!" });
                 }
             }); 
              
