@@ -9,6 +9,7 @@ const db = new sqlite3.Database('./wets.db', sqlite3.OPEN_READWRITE | sqlite3.OP
     if (err) {
         console.error("Error opening database:", err.message);
     } else {
+
         console.log("Connected to the database.");
     }
 });
@@ -25,19 +26,17 @@ app.get('/make_wet/:make/:wet', (req, res) => {
     const val = decodeURIComponent(req.params.wet);
     console.log(key);
     console.log(val);
-    db.run(`update moko set value like ? where key like ?`,[val,key],(err)=>{
-        if(err){
-            res.json({key:"Somthing went wrong"});
-            console.log("not inserted")
-
-        }
-        else{
+    db.run(`UPDATE moko SET value = ? WHERE key = ?`, [val, key], (err) => {
+        if (err) {
+            res.json({ key: "Something went wrong" });
+            console.log("not updated");
+        } else {
             console.log("updated in database!!");
-            res.json({key:"Saved"});
+            res.json({ key: "Saved" });
         }
     });
-    
 });
+
 
 app.get('/fuck/:id', (req, res) => {
     console.log("entered");
