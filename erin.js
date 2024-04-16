@@ -23,7 +23,7 @@ app.get('/make_wet/:make/:wet', (req, res) => {
     const val = decodeURIComponent(req.params.wet);
     console.log(key);
     console.log(val);
-    db.run(`insert or replace into moko values(?,?)`,[val,key],(err)=>{
+    db.run(`insert or replace into moko values(?,?)`,[key,val],(err)=>{
         if(err){
             res.json({key:"Somthing went wrong"});
             console.log("not inserted")
