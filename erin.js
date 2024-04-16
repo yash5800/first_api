@@ -28,6 +28,25 @@ app.get('/make_wet/:make/:wet', (req, res) => {
     console.log(val);
     db.run(`UPDATE moko SET value = ? WHERE key = ?`, [val, key], (err) => {
         if (err) {
+            console.error(err.message)
+            res.json({ key: "Something went wrong" });
+            console.log("not updated");
+        } else {
+            console.log("updated in database!!");
+            res.json({ key: "Saved" });
+        }
+    });
+});
+
+
+app.get('/make_wet/:make/:wet', (req, res) => {
+    console.log("entered into saver");
+    const key = decodeURIComponent(req.params.make);
+    const val = decodeURIComponent(req.params.wet);
+    console.log(key);
+    console.log(val);
+    db.run(`UPDATE moko SET value = ? WHERE key = ?`, [val, key], (err) => {
+        if (err) {
             console.error('Error updating data:', err.message);
             res.json({ key: "Something went wrong" }); // Send response here
             console.log("not updated");
