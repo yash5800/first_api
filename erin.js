@@ -1,23 +1,36 @@
 const express = require('express'); 
 const cors = require('cors');
-const sqlite3 = require('sqlite3').verbose();
+const mysql = require('mysql');
 const app = express();
 
 const port = process.env.PORT || 8080;
 
-const db = new sqlite3.Database('./wets.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
-    if (err) {
-        console.error("Error opening database:", err.message);
-    } else {
 
-        console.log("Connected to the database.");
+const connection = mysql.createConnection({
+    host: 'bx9q0wtcxb0065zsduco-mysql.services.clever-cloud.com',
+    user: 'ucxrx4v9si7xd8j7',
+    password: 'WqsTTpzcrp7jDik9ORTI',
+    database: 'bx9q0wtcxb0065zsduco'
+});
+
+connection.connect((err)=>{
+    if(err){
+        console.error("connection failed")
+    }
+    else{
+        console.log("Connected to database!!")
     }
 });
 
 app.use(cors());
 
-db.run('create table if not exists moko(key text primary key,value text)');
-
+connection.query('create table if not exists moko(user text,value text)',(err,result)=>{
+    if(err){
+        console.error('error in creation');
+        return;
+    }
+        console.log("created!");
+});
 
 
 app.get('/make_wet/:make/:wet', (req, res) => {
@@ -26,15 +39,13 @@ app.get('/make_wet/:make/:wet', (req, res) => {
     const val = decodeURIComponent(req.params.wet);
     console.log(key);
     console.log(val);
-    db.run(`UPDATE moko SET value = ? WHERE key = ?`, [val, key], (err) => {
-        if (err) {
-            console.error(err.message)
-            res.json({ key: "Something went wrong" });
-            console.log("not updated");
-        } else {
-            console.log("updated in database!!");
-            res.json({ key: "Saved" });
-        }
+    connection.query(`update moko set value = ? where user = ?`,[val,key],(err,result)=>{
+       if(err){
+         console.error("not updated");
+         return
+       }
+       console.log("Database say : ",result);
+       
     });
 });
 
@@ -46,19 +57,17 @@ app.get('/fuck/:id', (req, res) => {
     const key = req.params.id;
     console.log(key);
     var data = '';
-    //check if exists in database and return val
-    db.get(`SELECT * FROM moko WHERE key = ?`, [key],(err,row)=>{
+    connection.query(`SELECT * FROM moko WHERE user = ?`, [key],(err,rows)=>{
         if(err){
          console.log("somthing wroug");
          res.json({ key: "Failed" });
         }
         else{
-         if(row){
-           console.log("Data : ",row);
-           res.json({ key: row.value });
-           return ;
-         }else{
-            db.run(`insert into moko values(?,'')`,[key],(err)=>{
+            if (rows.length > 0) {
+                console.log("Data:", rows);
+                res.json({ key: rows[0].value });
+            }else{
+            connection.query(`insert into moko values(?,'')`,[key],(err,result)=>{
                 if(err){
                     console.log("not inserted")
                     res.json({ key: "Failed to create" });
