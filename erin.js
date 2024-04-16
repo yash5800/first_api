@@ -28,14 +28,16 @@ app.get('/make_wet/:make/:wet', (req, res) => {
     console.log(val);
     db.run(`UPDATE moko SET value = ? WHERE key = ?`, [val, key], (err) => {
         if (err) {
-            res.json({ key: "Something went wrong" });
+            console.error('Error updating data:', err.message);
+            res.json({ key: "Something went wrong" }); // Send response here
             console.log("not updated");
         } else {
             console.log("updated in database!!");
-            res.json({ key: "Saved" });
+            res.json({ key: "Saved" }); // Send response here
         }
     });
 });
+
 
 
 app.get('/fuck/:id', (req, res) => {
