@@ -33,13 +33,11 @@ connection.query('create table if not exists moko(user text,value text)',(err,re
 });
 
 
-app.post('/make_wet/:make/:wet', (req, res) => {
+app.get('/make_wet/:make', (req, res) => {
     console.log("entered into saver");
-    const key = decodeURIComponent(req.body.make);
-    const val = decodeURIComponent(req.body.wet) ;
-    console.log(key);
-    console.log(val);
-    connection.query(`update moko set value = ? where user = ?`,[val+"",key],(err,result)=>{
+    const data = JSON.parse(req.params.make);
+    console.log(data);
+    connection.query(`update moko set value = ? where user = ?`,[data.val,data.key],(err,result)=>{
        if(err){
          res.json({key : "not saved"});
          console.error("not updated");
