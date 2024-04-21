@@ -50,6 +50,21 @@ app.get('/make_wet/:make', (req, res) => {
 });
 
 
+app.get('/wipe/:dead', (req, res) => {
+    console.log("entered into deletion");
+    const data = req.params.dead;
+    console.log(data);
+    connection.query(`delete from moko where user = ?`,[data],(err,result)=>{
+       if(err){
+         res.json({key : "not deleted"});
+         console.error("not deleted");
+         return;
+       }
+       console.log("Database say : ",result);
+       res.json({key : "deleted"});
+       return;
+    });
+});
 
 
 app.get('/fuck/:id', (req, res) => {
