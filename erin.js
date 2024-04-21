@@ -57,11 +57,11 @@ app.get('/wipe/:dead', (req, res) => {
     connection.query(`delete from moko where user = ?`,[data],(err,result)=>{
        if(err){
          res.json({key : "not deleted"});
-         console.error("not deleted");
+         console.error("not Deleted");
          return;
        }
        console.log("Database say : ",result);
-       res.json({key : "deleted"});
+       res.json({key : "Deleted"});
        return;
     });
 });
